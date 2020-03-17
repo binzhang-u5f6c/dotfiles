@@ -1,5 +1,5 @@
 "Plugin management
-call plug#begin('~/.vim/plugins')
+call plug#begin('~/.config/nvim/plugins')
 "color scheme
 Plug 'altercation/vim-colors-solarized'
 "status line

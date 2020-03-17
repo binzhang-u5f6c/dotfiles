@@ -1,3 +1,3 @@
-function lsalh
+function sl
     ls -alh $argv
 end

@@ -1,0 +1,10 @@
+{
+    "suggest.minTriggerInputLength": 2,
+    "suggest.acceptSuggestionOnCommitCharacter": true,
+
+    // coc-explorer
+    "explorer.quitOnOpen": true,
+
+    // coc-python
+    "python.jediEnabled": false
+}

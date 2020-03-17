@@ -43,14 +43,16 @@ chmod 644 ~/.pam_environment
 cp .config/fish/fish_variables ~/.config/fish/fish_variables
 chmod 644 ~/.config/fish/fish_variables
 [ -d ~/.config/fish/functions ] || mkdir ~/.config/fish/functions
-cp .config/fish/functions/* .config/fish/functions/
+cp .config/fish/functions/* ~/.config/fish/functions/
 chmod 644 .config/fish/functions/*
 
 cp .tmux.conf ~/.tmux.conf
 
 [ -d ~/.config/nvim ] || mkdir ~/.config/nvim
 cp .config/nvim/init.vim ~/.config/nvim/init.vim
+cp .config/nvim/coc-settings.json ~/.config/nvim/coc-settings.json
 chmod 644 ~/.config/nvim/init.vim
+chmod 644 ~/.config/nvim/coc-settings.json
 
 [ -d ~/.ssh ] || mkdir ~/.ssh
 cp .ssh/config ~/.ssh/config
