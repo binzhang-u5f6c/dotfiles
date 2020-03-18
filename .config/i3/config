@@ -188,8 +188,10 @@ bar {
     status_command i3status --config ~/.config/i3/i3status.conf
 }
 
-exec_always picom -Cb -d :0
-exec_always pa-applet
-exec_always nm-applet
-exec_always cbatticon
-exec_always fcitx
+exec picom -Cb -d :0
+exec pa-applet
+exec nm-applet
+exec cbatticon
+exec fcitx
+exec dropbox
+exec goldendict
