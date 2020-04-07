@@ -44,7 +44,6 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec rofi -show run
-bindsym $mod+w exec rofi -show window
 
 # change focus
 bindsym $mod+h focus left
@@ -167,6 +166,7 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Launch applications
+bindsym $mod+w exec google-chrome-stable --proxy-server=127.0.0.1:8888
 bindsym $mod+f exec firefox
 bindsym $mod+g exec goldendict
 bindsym $mod+q exec pavucontrol-qt
@@ -188,10 +188,11 @@ bar {
     status_command i3status --config ~/.config/i3/i3status.conf
 }
 
-exec picom -Cb -d :0
-exec pa-applet
-exec nm-applet
-exec cbatticon
-exec fcitx
-exec dropbox
-exec goldendict
+exec --no-startup-id picom -Cb -d :0
+exec --no-startup-id pa-applet
+exec --no-startup-id nm-applet
+exec --no-startup-id cbatticon
+exec --no-startup-id fcitx
+exec --no-startup-id qv2ray
+exec --no-startup-id dropbox
+exec --no-startup-id goldendict

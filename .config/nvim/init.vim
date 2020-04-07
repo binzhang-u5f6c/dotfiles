@@ -113,7 +113,7 @@ xmap <leader>f <Plug>(coc-format-selected)
 nmap <leader>f <Plug>(coc-format-selected)
 "vista
 let g:vista_default_executive='coc'
-let g:vista_icon_indent=["╰─▸","├─▸"]
+let g:vista_icon_indent=["╰─▸ ","├─▸ "]
 let g:vist#renderer#enable_icon=1
 let g:vista#renderer#icons={
             \ "function": "\uf794",

@@ -4,6 +4,7 @@
 
     // coc-explorer
     "explorer.quitOnOpen": true,
+    "explorer.icon.enableNerdfont": true,
 
     // coc-python
     "python.jediEnabled": false
