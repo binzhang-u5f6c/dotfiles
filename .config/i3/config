@@ -166,7 +166,7 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 # Launch applications
-bindsym $mod+w exec google-chrome-stable --proxy-server=127.0.0.1:8888
+bindsym $mod+w exec google-chrome-stable --proxy-server=127.0.0.1:1080
 bindsym $mod+f exec firefox
 bindsym $mod+g exec goldendict
 bindsym $mod+q exec pavucontrol-qt
@@ -189,10 +189,11 @@ bar {
 }
 
 exec --no-startup-id picom -Cb -d :0
+exec --no-startup-id v2ray -config=/home/bzhang/.config/v2ray/config.json
+
 exec --no-startup-id pa-applet
 exec --no-startup-id nm-applet
 exec --no-startup-id cbatticon
 exec --no-startup-id fcitx
-exec --no-startup-id qv2ray
 exec --no-startup-id dropbox
 exec --no-startup-id goldendict

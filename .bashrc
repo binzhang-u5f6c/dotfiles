@@ -6,4 +6,8 @@
 [[ $- != *i* ]] && return
 
 alias ls='ls --color=auto'
-PS1='[\u@\h \W]\$ '
+alias sl='ls -alh'
+alias jkl='~/.gem/ruby/2.7.0/bin/jekyll'
+alias bundle='~/.gem/ruby/2.7.0/bin/bundle'
+
+PS1='\[\033[0;34m\]\w\[\033[0m\] \$ '

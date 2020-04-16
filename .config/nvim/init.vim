@@ -9,6 +9,11 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'easymotion/vim-easymotion'
 "auto complete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"task
+Plug 'skywind3000/asyncrun.vim'
+Plug 'skywind3000/asynctasks.vim'
+"debug
+Plug 'puremourning/vimspector'
 "tag bar
 Plug 'liuchengxu/vista.vim'
 "git wrapper
@@ -72,6 +77,16 @@ nmap gs <Plug>(easymotion-overwin-f2)
 "coc
 set updatetime=300
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+"coc extensions
+let g:coc_global_extensions=[
+    \ "coc-lists", "coc-snippets", "coc-git", "coc-yank",
+    \ "coc-tasks", "coc-bookmark",
+    \ "coc-tabnine", "coc-actions", "coc-pairs",
+    \ "coc-highlight", "coc-spell-checker",
+    \ "coc-explorer",
+    \ "coc-json", "coc-yaml", "coc-markdownlint",
+    \ "coc-python", "coc-ccls",
+    \ "coc-html", "coc-css", "coc-tsserver"]
 "use <tab> for trigger completion and navigate to the next item
 function! s:check_back_space() abort
     let col = col('.') - 1
@@ -111,6 +126,8 @@ nmap <leader>rn <Plug>(coc-rename)
 "format
 xmap <leader>f <Plug>(coc-format-selected)
 nmap <leader>f <Plug>(coc-format-selected)
+"vimspector
+let g:vimspector_enable_mappings='HUMAN'
 "vista
 let g:vista_default_executive='coc'
 let g:vista_icon_indent=["╰─▸ ","├─▸ "]
