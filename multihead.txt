@@ -1,0 +1,8 @@
+# the following line solve the black screen problem
+xrandr --auto
+
+# the following line is required by display driver
+xrandr --setprovideroutputsource 1 0
+
+# turn off dpms
+xset s off -dpms
