@@ -12,12 +12,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "task
 Plug 'skywind3000/asyncrun.vim'
 Plug 'skywind3000/asynctasks.vim'
-"debug
-Plug 'puremourning/vimspector'
-"tag bar
-Plug 'liuchengxu/vista.vim'
 "git wrapper
 Plug 'tpope/vim-fugitive'
+"auto pairs
+Plug 'jiangmiao/auto-pairs'
 "markdown display
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app & yarn install'}
 call plug#end()
@@ -25,22 +23,18 @@ call plug#end()
 "Basic setting
 "file format
 set fileformat=unix
-"enable filetype
-filetype on
-filetype indent on
-
-"Hotkey
-"jump between buffers
-nnoremap <silent> gb :bprevious<CR>
-nnoremap <silent> gB :bnext<CR>
-"rerender screen and erase search highlight
-nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
-"open explorer
-nnoremap <silent> <C-e> :CocCommand explorer<CR>
-"open coc list
-nnoremap <silent> <C-p> :<C-u>CocList<CR>
-"open tag bar
-nnoremap <silent> <C-y> :Vista<CR>
+"tabstop
+set expandtab
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+"fold
+set foldmethod=indent
+set foldlevel=99
+"search setting
+set ignorecase
+"text width
+set textwidth=79
 
 "Appearance
 "color
@@ -58,35 +52,19 @@ set signcolumn=yes
 set splitright
 set splitbelow
 
-"Code
-"indent
-set expandtab
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-set textwidth=79
-"fold
-set foldmethod=indent
-set foldlevel=99
-"search setting
-set ignorecase
-
-"Plugin setting
+"Hotkey
+"jump between buffers and tabs
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [t :tabprevious<CR>
+nnoremap <silent> ]t :tabnext<CR>
+"rerender screen and erase search highlight
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+"open explorer
+nnoremap <silent> <leader>e :<C-u>Explore<CR>
 "easy motion
-nmap gs <Plug>(easymotion-overwin-f2)
+nmap <leader>s <Plug>(easymotion-overwin-f2)
 "coc
-set updatetime=300
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-"coc extensions
-let g:coc_global_extensions=[
-    \ "coc-lists", "coc-snippets", "coc-git", "coc-yank",
-    \ "coc-tasks", "coc-bookmark",
-    \ "coc-tabnine", "coc-actions", "coc-pairs",
-    \ "coc-highlight", "coc-spell-checker",
-    \ "coc-explorer",
-    \ "coc-json", "coc-yaml", "coc-markdownlint",
-    \ "coc-python", "coc-ccls",
-    \ "coc-html", "coc-css", "coc-tsserver"]
 "use <tab> for trigger completion and navigate to the next item
 function! s:check_back_space() abort
     let col = col('.') - 1
@@ -100,11 +78,11 @@ inoremap <silent><expr> <Tab>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-"snippet
+"snippet expand
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 "navigate diagnostics
-nmap <silent> ]g <Plug>(coc-diagnostic-prev)
-nmap <silent> [g <Plug>(coc-diagnostic-next)
+nmap <silent> ]d <Plug>(coc-diagnostic-prev)
+nmap <silent> [d <Plug>(coc-diagnostic-next)
 "goto
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gt <Plug>(coc-type-definition)
@@ -121,21 +99,60 @@ function! s:show_documentation()
 endfunction
 "highlight current symbol
 autocmd CursorHold * silent call CocActionAsync('highlight')
+"code action
+function! s:cocActionsOpenFromSelected(type) abort
+    execute 'CocCommand actions.open ' . a:type
+endfunction
+xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
 "rename
-nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>ar <Plug>(coc-rename)
 "format
-xmap <leader>f <Plug>(coc-format-selected)
-nmap <leader>f <Plug>(coc-format-selected)
-"vimspector
-let g:vimspector_enable_mappings='HUMAN'
-"vista
-let g:vista_default_executive='coc'
-let g:vista_icon_indent=["╰─▸ ","├─▸ "]
-let g:vist#renderer#enable_icon=1
-let g:vista#renderer#icons={
-            \ "function": "\uf794",
-            \ "variable": "\uf71b",
-            \ }
+xmap <leader>af <Plug>(coc-format-selected)
+nmap <leader>af <Plug>(coc-format-selected)
+"open coc list
+nnoremap <leader>d :<C-u>CocList --normal diagnostics<CR>
+nnoremap <leader>t :<C-u>CocList --normal outline<CR>
+nnoremap <leader>b :<C-u>CocList --normal buffers<CR>
+nnoremap <leader>f :<C-u>CocList --normal files<CR>
+nnoremap <leader>r :<C-u>CocList --normal grep<CR>
+nnoremap <leader>y :<C-u>CocList -A --normal yank<CR>
+nnoremap mm :<C-u>CocCommand bookmark.toggle<CR>
+nnoremap mi :<C-u>CocCommand bookmark.annotate<CR>
+nnoremap [m :<C-u>CocCommand bookmark.prev<CR>
+nnoremap ]m :<C-u>CocCommand bookmark.next<CR>
+nnoremap ma :<C-u>CocList --normal bookmark<CR>
+nnoremap <leader>m :<C-u>CocList --normal tasks<CR>
+nnoremap <leader>p :<C-u>CocList<CR>
+
+"Plugin setting
+"coc
+set hidden
+set nobackup
+set nowritebackup
+set updatetime=300
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+let g:coc_global_extensions=[
+    \ "coc-snippets",
+    \ "coc-tabnine",
+    \ "coc-lists",
+    \ "coc-git",
+    \ "coc-yank",
+    \ "coc-bookmark",
+    \ "coc-tasks",
+    \ "coc-actions",
+    \ "coc-highlight",
+    \ "coc-json",
+    \ "coc-yaml",
+    \ "coc-markdownlint",
+    \ "coc-python",
+    \ "coc-ccls",
+    \ "coc-html",
+    \ "coc-css",
+    \ "coc-tsserver"]
+"asynctask
+let g:asyncrun_open=6
+let g:asyncrun_rootmarks=['.git', '.svn']
 "markdown display
 let g:mkdp_auto_start=1
 let g:mkdp_auto_close=1
