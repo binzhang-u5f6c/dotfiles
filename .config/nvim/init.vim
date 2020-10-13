@@ -49,6 +49,20 @@ set signcolumn=yes
 set splitright
 set splitbelow
 
+"External clipboard
+let g:clipboard = {
+            \   'name': 'myClipboard',
+            \   'copy': {
+            \       '*': 'clip.exe',
+            \       '+': 'clip.exe'
+            \   },
+            \   'paste': {
+            \       '*': 'powershell.exe -command [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+            \       '+': 'powershell.exe -command [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))'
+            \   },
+            \   'cache_enabled': 1
+            \ }
+
 "Hotkey
 "jump between buffers and tabs
 nnoremap <silent> [b :bprevious<CR>
@@ -57,8 +71,6 @@ nnoremap <silent> [t :tabprevious<CR>
 nnoremap <silent> ]t :tabnext<CR>
 "rerender screen and erase search highlight
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
-"open explorer
-nnoremap <silent> <leader>e :<C-u>Explore<CR>
 "easy motion
 nmap <leader>s <Plug>(easymotion-overwin-f2)
 "coc
@@ -96,13 +108,12 @@ endfunction
 "rename
 nmap <leader>r <Plug>(coc-rename)
 "open coc list
-nnoremap <leader>p :<C-u>CocList<CR>
 nnoremap <leader>d :<C-u>CocList --normal diagnostics<CR>
 nnoremap <leader>t :<C-u>CocList --normal outline<CR>
 nnoremap <leader>a :<C-u>CocList --normal actions<CR>
 nnoremap <leader>b :<C-u>CocList buffers<CR>
 nnoremap <leader>f :<C-u>CocList files<CR>
-nnoremap <leader>g :<C-u>CocList grep<CR>
+nnoremap <leader>p :<C-u>CocList grep<CR>
 nnoremap <leader>y :<C-u>CocList -A --normal yank<CR>
 nnoremap mm :<C-u>CocCommand bookmark.toggle<CR>
 nnoremap mi :<C-u>CocCommand bookmark.annotate<CR>
@@ -123,18 +134,19 @@ set nobackup
 set nowritebackup
 set updatetime=300
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-let g:coc_global_extensions=[
-    \ "coc-snippets",
-    \ "coc-tabnine",
-    \ "coc-yank",
-    \ "coc-lists",
-    \ "coc-bookmark",
-    \ "coc-git",
-    \ "coc-highlight",
-    \ "coc-json",
-    \ "coc-yaml",
-    \ "coc-markdownlint",
-    \ "coc-sh",
-    \ "coc-html",
-    \ "coc-css",
-    \ "coc-tsserver"]
+let g:coc_global_extensions = [
+            \   "coc-snippets",
+            \   "coc-tabnine",
+            \   "coc-yank",
+            \   "coc-lists",
+            \   "coc-highlight",
+            \   "coc-bookmark",
+            \   "coc-git",
+            \   "coc-json",
+            \   "coc-yaml",
+            \   "coc-sh",
+            \   "coc-markdownlint",
+            \   "coc-html",
+            \   "coc-css",
+            \   "coc-tsserver"
+            \ ]

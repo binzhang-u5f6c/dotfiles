@@ -11,23 +11,64 @@ Install essential softwares after Windows 10 installation.
 * [goldendict](https://www.github.com/goldendict/goldendict)
 * [potplayer](https://potplayer.daum.net)
 
-## 2. Install ArchWSL
+## 2. Install Python and data science toolkit
 
-### 2.1. Enable the WSL feature
+[Download](https://python.org/downloads/) and install Python.
+Python 3.7 is the latest security fix release by now.
+
+Install Jupyter Lab with some awesome extensions.
+[Download](https://nodejs.org/en/download/) and install Node.js
+which is required by jupyter-lsp.
+
+```bash
+pip install jupyterlab
+pip install jupyter-lsp
+pip install python-language-server[all]
+jupyter labextension install jupyterlab-drawio
+jupyter labextension install @jupyterlab/toc
+jupyter labextension install @arbennett/base16-solarized-light
+jupyter labextension install @krassowski/jupyterlab-lsp
+```
+
+**Note**: you may encounter error while installing extensions.
+Modifying `Python37\Lib\site-packages\jupyterlab\commands.py`
+can fix the bug.
+
+```python
+self.proc = self._create_process(
+    cwd=cwd,
+    env=env,
+    stderr=subprocess.STDOUT,
+    stdout=subprocess.PIPE,
+    universal_newlines=True,
+    # add the following line
+    encoding="UTF-8"
+)
+```
+
+Install essential data science packages.
+
+```bash
+pip install numpy scipy matplotlib
+pip install pandas scikit-learn
+```
+
+## 3. Install ArchWSL
+
+### 3.1. Enable the WSL feature
 
 Open PowerShell as Administrator and run.
 
 ```PS
-dism.exe /online /enable-feature `
-/featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 ```
 
-### 2.2. Install ArchWSL
+### 3.2. Install ArchWSL
 
 Download [ArchWSL](https://github.com/yuk7/ArchWSL).
 Run `Arch.exe` to extract rootfs and register to WSL.
 
-### 2.3. User management
+### 3.3. User management
 
 Set root password via `passwd`.
 Add user and set user's password.
@@ -52,19 +93,17 @@ Set up the default user.
 Arch.exe config --default-user your_name
 ```
 
-### 2.4. Update to WSL2
+### 3.4. Update to WSL2
 
 Open PowerShell as Administrator and
 enable the Virtual Machine Platform feature
 
 ```PS
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform `
-/all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 ```
 
-Download the
-[Linux kernel update package](https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel)
-and install.
+[Download](https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel)
+and install Linux kernel update package.
 Set the ArchWSL to WSL2.
 
 ```PS
@@ -72,9 +111,9 @@ wsl --set-version Arch 2
 wsl --list --verbose
 ```
 
-### 2.5. Install WSLtty as terminal emulator
+### 3.5. Install WSLtty as terminal emulator
 
-[Download](https://github.com/mintty/wsltty) and install.
+[Download](https://github.com/mintty/wsltty) and install WSLtty.
 The color theme files are in `AppData/Local/wsltty/usr/share/mintty/themes`.
 Add the solarized light theme.
 
@@ -100,7 +139,7 @@ BoldWhite=#002b36
 Set the Foreground, Background and Cursor as
 `101,123,131`, `253,246,227` and `88,110,117` respectively.
 
-### 2.6. Install utilities
+### 3.6. Install utilities
 
 Move the proper mirrors to the top in `/etc/pacman.d/mirrorlist`.
 Initialize keyring.
@@ -147,7 +186,7 @@ ssh-keygen -t rsa -b 4096 -C "your_email"
 
 and add your public key to Github.
 
-### 2.7. Install package manager
+### 3.7. Install package manager
 
 Install `yay`.
 
@@ -169,7 +208,7 @@ Include = /etc/pacman.d/mirrorlist
 
 Update via `yay`.
 
-## 3. Download the dotfiles
+## 4. Download the dotfiles
 
 ```bash
 git clone git@github.com:binzhang-u5f6c/dotfiles.git .dotfiles
@@ -179,32 +218,19 @@ chmod 755 install.sh
 cd
 ```
 
-## 4. Configure development environment
+## 5. Configure development environment
 
-### 4.1. Install programming languages
+### 5.1. Install programming languages
 
 ```bash
-yay -S python python2 python-pip
 yay -S nodejs npm yarn
+yay -S ruby python
 ```
 
-### 4.2. Install Jupyter and data science packages
+### 5.2. Install and configure neovim
 
 ```bash
-pip install jupyterlab
-pip install jupyter-lsp
-pip install python-language-server[all]
-jupyter labextension install jupyterlab-drawio
-jupyter labextension install @jupyterlab/toc
-jupyter labextension install @arbennett/base16-solarized-light
-jupyter labextension install @krassowski/jupyterlab-lsp
-pip install pandas numpy scipy matplotlib sklearn
-```
-
-### 4.3. Install and configure neovim
-
-```bash
-yay -S neovim python-pynvim xclip
+yay -S neovim python-pynvim
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 mkdir ~/.config/nvim/plugins
@@ -213,12 +239,11 @@ nvim .config/nvim/init.vim
 
 Install vim plugins via `:PlugInstall` in neovim.
 
-### 4.4. Download blogs and gems
+## 6. Download blogs and gems
 
-Install Ruby and bundler.
+Install bundler for Jekyll.
 
 ```bash
-yay -S ruby
 gem install bundler
 bundle config path ~/.gem
 ```
