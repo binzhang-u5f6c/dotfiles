@@ -5,16 +5,22 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# alias
 alias ls='ls --color=auto'
 alias sl='ls -alh'
 alias pbcopy='clip.exe'
 alias pbpaste='powershell.exe -command [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))'
 alias grep='grep --color'
-alias bundle='~/.gem/ruby/2.7.0/bin/bundle'
-alias jkl='~/.gem/ruby/2.7.0/bin/bundle exec jekyll'
 
-PS1='\[\033[0;34m\]\w\[\033[0m\] \$ '
+# prompt
+function nonzero_return {
+	RETVAL=$?
+	[ $RETVAL -ne 0 ] && echo " [$RETVAL]"
+}
 
+PS1='\[\033[34m\]\W\[\033[31m\]$(nonzero_return)\[\033[0m\] \$ '
+
+# cat image
 function icat {
     width=""
     height=""

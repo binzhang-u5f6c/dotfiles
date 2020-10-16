@@ -50,7 +50,7 @@ Install essential data science packages.
 
 ```bash
 pip install numpy scipy matplotlib
-pip install pandas scikit-learn
+pip install pandas scikit-learn scikit-multiflow
 ```
 
 ## 3. Install ArchWSL
@@ -191,7 +191,7 @@ and add your public key to Github.
 Install `yay`.
 
 ```bash
-pacman -S go
+pacman -S gcc-go
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
@@ -239,20 +239,28 @@ nvim .config/nvim/init.vim
 
 Install vim plugins via `:PlugInstall` in neovim.
 
-## 6. Download blogs and gems
+## 6. Download blogs
 
-Install bundler for Jekyll.
+Install hugo for static site generation.
 
 ```bash
-gem install bundler
-bundle config path ~/.gem
+yay -S hugo
 ```
 
-Clone blogs repository and install gems.
+Download blogs repository.
 
 ```bash
 mkdir Studio
-git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.git Studio/00.Blogs
-cd Studio/00.Blogs
-bundle install
+git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.source.git Studio/00.Site
+
+cd Studio/00.Site
+git submodule add https://github.com/koirand/pulp.git themes/pulp
+git submodule add git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.git public
+```
+
+Generate the site.
+
+```bash
+hugo
+hugo server
 ```
