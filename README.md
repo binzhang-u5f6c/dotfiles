@@ -158,10 +158,12 @@ pacman -Syu
 Then install the essential packages.
 
 ```bash
-pacman -S base base-devel
+pacman -S base base-devel gcc-go
 pacman -S man-db man-pages
-pacman -S fd ripgrep fzf rsync
-pacman -S p7zip git openssh imagemagick
+pacman -S wget openssh
+pacman -S p7zip rsync
+pacman -S ripgrep fzf
+pacman -S git imagemagick
 ```
 
 Set your git user name and email address.
@@ -191,7 +193,6 @@ and add your public key to Github.
 Install `yay`.
 
 ```bash
-pacman -S gcc-go
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si

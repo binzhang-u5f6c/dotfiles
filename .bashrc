@@ -14,8 +14,8 @@ alias grep='grep --color'
 
 # prompt
 function nonzero_return {
-	RETVAL=$?
-	[ $RETVAL -ne 0 ] && echo " [$RETVAL]"
+    RETVAL=$?
+    [ $RETVAL -ne 0 ] && echo " [$RETVAL]"
 }
 
 PS1='\[\033[34m\]\W\[\033[31m\]$(nonzero_return)\[\033[0m\] \$ '
@@ -42,7 +42,7 @@ function icat {
                 ;;
         esac
     done
-    shift $[$OPTIND-1]
+    shift $(($OPTIND-1))
     for img in "$@"; do
         if [ -r $img ]; then
             echo -en "\e]1337;File=name=$(base64 -w 0 $img);inline=1;$width$height$pAR:$(base64 -w 0 $img)\a"
