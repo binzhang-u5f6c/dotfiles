@@ -1,0 +1,11 @@
+cbatticon &
+nm-applet &
+pa-applet &
+fcitx &
+goldendict &
+light-locker &
+v2ray -c /home/bzhang/.config/v2ray/config.json &> /dev/null &
+
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx

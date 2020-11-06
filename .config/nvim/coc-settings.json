@@ -4,5 +4,56 @@
 
   "snippets.priority": 100,
   "tabnine.priority": 90,
-  "yank.priority": 80
+  "yank.priority": 80,
+
+  "languageserver": {
+    "bash": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "filetypes": ["sh"],
+      "trace.server": "verbose",
+      "ignoredRootPaths": ["~"]
+    },
+    "ccls": {
+      "command": "ccls",
+      "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
+      "trace.server": "verbose",
+      "rootPatterns": [".ccls", ".git/"],
+      "initializationOptions": {
+        "cache": {"directory": "/tmp/lsp_ccls"}
+      }
+    },
+    "python": {
+      "command": "python",
+      "args": ["-m", "pyls", "-vv", "--log-file", "/tmp/lsp_pyls.log"],
+      "filetypes": ["python"],
+      "trace.server": "verbose",
+      "settings": {
+        "pyls": {
+          "enabled": true,
+          "trace": {"server": "verbose"},
+          "commandPath": "",
+          "configurationSource": ["pycodestyle"],
+          "plugins": {
+            "jedi_completion": {"enabled": true},
+            "jedi_hover": {"enabled": true},
+            "jedi_reference": {"enabled": true},
+            "jedi_signature_help": {"enabled": true},
+            "jedi_symbols": {"enabled": true, "all_scopes": true},
+            "mccabe": {"enabled": true, "threshold": 15},
+            "preload": {"enabled": true},
+            "pycodestyle": {"enabled": true},
+            "pydocstyle": {
+              "enabled": true,
+              "match": "(?!test_).*\\.py",
+              "matchDir": "[^\\.].*"
+            },
+            "pyflakes": {"enabled": true},
+            "rope_completion": {"enabled": true},
+            "yapf": {"enabled": true}
+          }
+        }
+      }
+    }
+  }
 }

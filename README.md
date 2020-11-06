@@ -1,179 +1,330 @@
-# Developing on ArchWSL
+# Arch Linux Installation Guide
 
-## 1. Install essential softwares
+## 1. Pre-installation
 
-Install essential softwares after Windows 10 installation.
+### 1.1 Prepare an installation medium
 
-* [Chrome](https://www.google.com/intl/zh-CN/chrome/)
-* [Firefox](https://www.mozilla.org/en-US/firefox/new/)
-* [7zip](https://www.7-zip.org)
-* [keepassxc](https://keepassxc.org)
-* [goldendict](https://www.github.com/goldendict/goldendict)
-* [potplayer](https://potplayer.daum.net)
+Download the Arch Linux installation [image](https://archlinux.org/download/).
+Use [Rufus](https://rufus.ie) to write it to a USB stick.
+Boot the live environment.
 
-## 2. Install Python and data science toolkit
+### 1.2 Connect to the internet
 
-[Download](https://python.org/downloads/) and install Python.
-Python 3.7 is the latest security fix release by now.
-
-Install Jupyter Lab with some awesome extensions.
-[Download](https://nodejs.org/en/download/) and install Node.js
-which is required by jupyter-lsp.
+If the internet is not connected, check the network interface firstly.
 
 ```bash
-pip install jupyterlab
-pip install jupyter-lsp
-pip install python-language-server[all]
-jupyter labextension install jupyterlab-drawio
-jupyter labextension install @jupyterlab/toc
-jupyter labextension install @arbennett/base16-solarized-light
-jupyter labextension install @krassowski/jupyterlab-lsp
+ip link
 ```
 
-**Note**: you may encounter error while installing extensions.
-Modifying `Python37\Lib\site-packages\jupyterlab\commands.py`
-can fix the bug.
+Ethernet is preferred.
+Plug in the cable, and DHCD will work out of the box.
+For WiFi refer to [iwctl](https://wiki.archlinux.org/index.php/iwd#iwctl).
 
-```python
-self.proc = self._create_process(
-    cwd=cwd,
-    env=env,
-    stderr=subprocess.STDOUT,
-    stdout=subprocess.PIPE,
-    universal_newlines=True,
-    # add the following line
-    encoding="UTF-8"
-)
-```
-
-Install essential data science packages.
+### 1.3 Update the system clock
 
 ```bash
-pip install numpy scipy matplotlib
-pip install pandas scikit-learn scikit-multiflow
+timedatectl set-ntp true
 ```
 
-## 3. Install ArchWSL
+### 1.4 Partition the disks
 
-### 3.1. Enable the WSL feature
-
-Open PowerShell as Administrator and run.
-
-```PS
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-```
-
-### 3.2. Install ArchWSL
-
-Download [ArchWSL](https://github.com/yuk7/ArchWSL).
-Run `Arch.exe` to extract rootfs and register to WSL.
-
-### 3.3. User management
-
-Set root password via `passwd`.
-Add user and set user's password.
+Show all disks and partitions.
 
 ```bash
-useradd -m -G wheel your_name
-passwd your_name
+fdisk -l
 ```
 
-Set vim as the default editor of `visudo`.
+Create a partition for `/`, a partition for `/boot` and
+another partition for swap.
+
+Format the partitions.
 
 ```bash
-SUDO_EDITOR=vim
+mkfs.ext4 /dev/root_partition
+mkswap /dev/swap_partition
 ```
 
-Edit `/etc/sudoer` via `visudo` and comment out the line
-`%wheel ALL=(ALL) ALL` to make new user access to `sudo`.
+Mount the file systems.
 
-Set up the default user.
+```bash
+mount /dev/root_partition /mnt
+mkdir /mnt/boot
+mount /dev/boot_partition /mnt/boot
 
-```PS
-Arch.exe config --default-user your_name
+swapon /dev/swap_partition
 ```
 
-### 3.4. Update to WSL2
+## 2. Install basic Linux and configure the system
 
-Open PowerShell as Administrator and
-enable the Virtual Machine Platform feature
+### 2.1 Install basic Linux
 
-```PS
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+Select proper mirrors in `/etc/pacman.d/mirrorlist`.
+Install Linux, network manager and a text editor.
+
+```bash
+pacstrap /mnt base base-devel
+pacstrap /mnt linux linux-firmware
+pacstrap /mnt networkmanager vi
 ```
 
-[Download](https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel)
-and install Linux kernel update package.
-Set the ArchWSL to WSL2.
+Install CPU microcode according to your CPU.
 
-```PS
-wsl --set-version Arch 2
-wsl --list --verbose
+```bash
+pacstrap /mnt intel-ucode amd-ucode
 ```
 
-### 3.5. Install WSLtty as terminal emulator
+### 2.2 Configure the system
 
-[Download](https://github.com/mintty/wsltty) and install WSLtty.
-The color theme files are in `AppData/Local/wsltty/usr/share/mintty/themes`.
-Add the solarized light theme.
+Generate an fstab file.
+
+```bash
+genfstab -U /mnt >> /mnt/etc/fstab
+```
+
+Change root into the system.
+
+```bash
+arch-chroot /mnt
+```
+
+Set the time zone.
+
+```bash
+ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+```
+
+Edit `/etc/locale.gen` and uncomment `en_US.UTF-8`.
+Generate the locales.
+
+```bash
+locale-gen
+```
+
+Create the hostname file `/etc/hostname`.
 
 ```plain
-Black=#eee8d5
-Red=#dc322f
-Green=#859900
-Yellow=#b58900
-Blue=#268bd2
-Magenta=#d33682
-Cyan=#2aa198
-White=#073642
-BoldBlack=#fdf6e3
-BoldRed=#cb4b16
-BoldGreen=#93a1a1
-BoldYellow=#839496
-BoldBlue=#657b83
-BoldMagenta=#6c71c4
-BoldCyan=#586e75
-BoldWhite=#002b36
+hostname
 ```
 
-Set the Foreground, Background and Cursor as
-`101,123,131`, `253,246,227` and `88,110,117` respectively.
+Add matching entries to `/etc/hosts`.
 
-### 3.6. Install utilities
+```plain
+127.0.0.1     localhost
+::1           localhost
+127.0.1.1     hostname.localhost hostname
+```
 
-Move the proper mirrors to the top in `/etc/pacman.d/mirrorlist`.
-Initialize keyring.
+### 2.3 Configure the network
+
+Enable the network manager daemon.
 
 ```bash
-pacman-key --init
-pacman-key --populate
+systemctl enable --now NetworkManager.service
 ```
 
+Synchronize the system clock.
+
+```bash
+timedatectl set-ntp true
+hwclock --systohc --local
+```
+
+Add dispather script `/etc/NetworkManager/dispatcher.d/10-update-timesyncd`
+for time synchronization automatically.
+
+```bash
+#!/usr/bin/bash
+[ -n "$CONNECTION_UUID" ] || exit
+
+INTERFACE=$1
+ACTION=$2
+
+case $ACTION in
+    up | dhcp4-change | dhcp6-change)
+        [ -n "$DHCP4_NTP_SERVERS" ] || exit
+        exec > /etc/systemd/timesyncd.conf.d/$CONNECTION_UUID.conf
+        echo "[Time]"
+        echo "NTP=$DHCP4_NTP_SERVERS"
+        systemctl restart systemd-timesyncd
+        ;;
+    down)
+        rm -f /etc/systemd/timesyncd.conf.d/$CONNECTION_UUID.conf
+        systemctl restart systemd-timesyncd
+        ;;
+esac
+```
+
+### 2.4 User management
+
+Set the root password.
+
+```bash
+passwd
+```
+
+Add a new user account and set its password.
+
+```bash
+useradd -m -G wheel name
+passwd name
+```
+
+Edit `/etc/sudoers` via `visudo`.
+Comment out the line `%wheel ALL=(ALL) ALL` to make the new user access to
+`sudo`.
+
+### 2.5 Add boot entry
+
+Exit the chroot environment. Unmount all the partitions.
+
+```bash
+umount -R /mnt
+```
+
+Reboot the machine to UEFI shell,
+which is accessed in Arch Linux installation image.
+Create a boot entry for Arch Linux.
+
+```plain
+map
+ls FS0:
+bcfg boot dump
+bcfg boot add N FS0:\vmlinuz-linux "Arch Linux"
+```
+
+Create a text file.
+
+```plain
+edit FS0:\options.txt
+```
+
+Write following kernel options into it.
+
+```plain
+root=/dev/root_partition initrd=\initramfs-linux.img
+```
+
+Press `F2` to save and `F3` to exit.
+Add the option file to the boot entry.
+
+```plain
+bcfg boot -opt N FS0:\options.txt
+```
+
+Remove the boot entry when necessary.
+
+```plain
+bcfg boot rm N
+```
+
+## 3. Post-installation
+
+Reboot and log in as the new user account.
+
+Select proper mirrors in `/etc/pacman.d/mirrorlist`.
 Update the system.
 
 ```bash
 pacman -Syu
 ```
 
-Then install the essential packages.
+### 3.1 Package Management
+
+Install some programming languages which may be needed when making packages.
 
 ```bash
-pacman -S base base-devel gcc-go
-pacman -S man-db man-pages
-pacman -S wget openssh
-pacman -S p7zip rsync
-pacman -S ripgrep fzf
-pacman -S git imagemagick
+pacman -S perl python ruby go
 ```
 
-Set your git user name and email address.
+Install download tools.
+(Git is a version control system but it is often used as a download tool.)
 
 ```bash
+pacman -S git wget
 git config --global user.name "your_name"
 git config --global user.email your_email
 ```
 
-Add following content to `~/.ssh/config`.
+Install yay for package management of Arch User Repository.
+
+```bash
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd ..
+rm -rf yay
+yay
+```
+
+### 3.2 Install graphical user interface
+
+Install Xorg.
+
+```bash
+yay -S xorg
+```
+
+Install Nvidia driver.
+
+```bash
+yay -S nvidia nvidia-utils
+```
+
+Install windows manager, display manager and terminal emulator.
+
+```bash
+yay -S qtile
+yay -S lightdm lightdm-gtk-greeter light-locker
+systemctl enable lightdm.service
+yay -S termite
+```
+
+Install fonts.
+
+```bash
+yay -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
+yay -S ttf-nerd-fonts-symbols
+```
+
+### 3.3 Install sound server
+
+Install Pulse Audio and its GUI frontend.
+
+```bash
+yay -S pulseaudio pavucontrol
+```
+
+### 3.4 Install imput methods
+
+Install fcitx and pinyin input methods.
+
+```bash
+yay -S fcitx-im fcitx-configtool
+yay -S fcitx-googlepinyin fcitx-cloudpinyin
+```
+
+### 3.5 Install system trays
+
+Install system trays for battery, network and audio.
+
+```bash
+yay -S cbatticon network-manager-applet pa-applet-git
+```
+
+### 3.6 Install utilities and softwares
+
+```bash
+yay -S man-db man-pages
+yay -S p7zip openssh
+yay -S rsync rclone
+yay -S ripgrep fzf
+yay -S imagemagick feh
+yay -S keepassxc goldendict
+yay -S zathura zathura-pdf-mupdf zathura-djvu
+yay -S firefox vlc
+```
+
+Add the following to `~/.ssh/config`.
 
 ```plain
 Host *
@@ -188,27 +339,6 @@ ssh-keygen -t rsa -b 4096 -C "your_email"
 
 and add your public key to Github.
 
-### 3.7. Install package manager
-
-Install `yay`.
-
-```bash
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-cd ..
-rm -rf yay
-```
-
-Comment out the lines in `/etc/pacman.conf` to enable multilib repository.
-
-```plain
-[multilib]
-Include = /etc/pacman.d/mirrorlist
-```
-
-Update via `yay`.
-
 ## 4. Download the dotfiles
 
 ```bash
@@ -221,24 +351,77 @@ cd
 
 ## 5. Configure development environment
 
-### 5.1. Install programming languages
+### 5.1 Install and configure neovim
+
+Install neovim and its python/nodejs providers.
 
 ```bash
+yay -S neovim xclip
+yay -S python-pip
+pip install pynvim
 yay -S nodejs npm yarn
-yay -S ruby python
+npm install -g neovim
 ```
 
-### 5.2. Install and configure neovim
+Install neovim plugins.
 
 ```bash
-yay -S neovim python-pynvim
 curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 mkdir ~/.config/nvim/plugins
 nvim .config/nvim/init.vim
 ```
 
-Install vim plugins via `:PlugInstall` in neovim.
+Use `:PlugInstall` in neovim to install vim plugins.
+
+### 5.2 Install Jupyter lab and some extensions
+
+```bash
+pip install jupyterlab
+pip install jupyter-lsp
+jupyter labextension install @jupyterlab/toc
+jupyter labextension install @arbennett/base16-solarized-light
+jupyter labextension install jupyterlab-drawio
+jupyter labextension install @krassowski/jupyterlab-lsp
+```
+
+Create a virtual environment, register an iPython kernel,
+and install data science packages.
+
+```bash
+python -m venv .data.science.venv
+source .data.science.venv/bin/activate
+pip install ipykernel
+python -m ipykernel install --name name
+pip install numpy scipy matplotlib
+pip install pandas scikit-learn scikit-multiflow
+```
+
+### 5.3 Install LSP
+
+Install markdown linter.
+
+```bash
+npm install -g markdownlint-cli
+```
+
+Install bash language server.
+
+```bash
+npm install -g bash-language-server
+```
+
+Install ccls.
+
+```bash
+yay -S ccls
+```
+
+Install python language server.
+
+```bash
+pip install python-language-server[all]
+```
 
 ## 6. Download blogs
 

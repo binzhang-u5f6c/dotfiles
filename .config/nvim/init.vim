@@ -49,20 +49,6 @@ set signcolumn=yes
 set splitright
 set splitbelow
 
-"External clipboard
-let g:clipboard = {
-            \   'name': 'myClipboard',
-            \   'copy': {
-            \       '*': 'clip.exe',
-            \       '+': 'clip.exe'
-            \   },
-            \   'paste': {
-            \       '*': 'powershell.exe -command [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-            \       '+': 'powershell.exe -command [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))'
-            \   },
-            \   'cache_enabled': 1
-            \ }
-
 "Hotkey
 "jump between buffers and tabs
 nnoremap <silent> [b :bprevious<CR>
@@ -141,12 +127,5 @@ let g:coc_global_extensions = [
             \   "coc-lists",
             \   "coc-highlight",
             \   "coc-bookmark",
-            \   "coc-git",
-            \   "coc-json",
-            \   "coc-yaml",
-            \   "coc-sh",
-            \   "coc-markdownlint",
-            \   "coc-html",
-            \   "coc-css",
-            \   "coc-tsserver"
+            \   "coc-git"
             \ ]
