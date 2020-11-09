@@ -108,6 +108,7 @@ cursor_warp = False
 floating_layout = layout.Floating(float_rules=[
     # Run the utility of `xprop` to see the wm class and name of an X client.
     {'wmclass': 'arandr'},
+    {'wmclass': 'pavucontrol'},
     {'wmclass': 'fcitx-config-gtk3'},
     {'wmclass': 'feh'},
     {'wmclass': 'keepassxc'},

@@ -64,7 +64,7 @@ Install Linux, network manager and a text editor.
 ```bash
 pacstrap /mnt base base-devel
 pacstrap /mnt linux linux-firmware
-pacstrap /mnt networkmanager vi
+pacstrap /mnt networkmanager vim
 ```
 
 Install CPU microcode according to your CPU.
@@ -111,7 +111,7 @@ Add matching entries to `/etc/hosts`.
 ```plain
 127.0.0.1     localhost
 ::1           localhost
-127.0.1.1     hostname.localhost hostname
+127.0.1.1     hostname.localdomain hostname
 ```
 
 ### 2.3 Configure the network
@@ -119,7 +119,7 @@ Add matching entries to `/etc/hosts`.
 Enable the network manager daemon.
 
 ```bash
-systemctl enable --now NetworkManager.service
+systemctl enable NetworkManager.service
 ```
 
 Synchronize the system clock.
@@ -127,31 +127,6 @@ Synchronize the system clock.
 ```bash
 timedatectl set-ntp true
 hwclock --systohc --local
-```
-
-Add dispather script `/etc/NetworkManager/dispatcher.d/10-update-timesyncd`
-for time synchronization automatically.
-
-```bash
-#!/usr/bin/bash
-[ -n "$CONNECTION_UUID" ] || exit
-
-INTERFACE=$1
-ACTION=$2
-
-case $ACTION in
-    up | dhcp4-change | dhcp6-change)
-        [ -n "$DHCP4_NTP_SERVERS" ] || exit
-        exec > /etc/systemd/timesyncd.conf.d/$CONNECTION_UUID.conf
-        echo "[Time]"
-        echo "NTP=$DHCP4_NTP_SERVERS"
-        systemctl restart systemd-timesyncd
-        ;;
-    down)
-        rm -f /etc/systemd/timesyncd.conf.d/$CONNECTION_UUID.conf
-        systemctl restart systemd-timesyncd
-        ;;
-esac
 ```
 
 ### 2.4 User management
@@ -201,7 +176,7 @@ edit FS0:\options.txt
 Write following kernel options into it.
 
 ```plain
-root=/dev/root_partition initrd=\initramfs-linux.img
+root=/dev/root_partition initrd=\cpu_manufacturer-ucode.img initrd=\initramfs-linux.img
 ```
 
 Press `F2` to save and `F3` to exit.
@@ -438,8 +413,8 @@ mkdir Studio
 git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.source.git Studio/00.Site
 
 cd Studio/00.Site
-git submodule add https://github.com/koirand/pulp.git themes/pulp
-git submodule add git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.git public
+git submodule init
+git submodule update
 ```
 
 Generate the site.
