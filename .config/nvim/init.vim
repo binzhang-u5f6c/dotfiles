@@ -15,6 +15,8 @@ Plug 'honza/vim-snippets'
 Plug 'tpope/vim-fugitive'
 "auto pairs
 Plug 'jiangmiao/auto-pairs'
+"markdown preview
+Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
 call plug#end()
 
 "Basic setting
@@ -48,6 +50,20 @@ set signcolumn=yes
 "multiple windows
 set splitright
 set splitbelow
+
+"Clipboard
+let g:clipboard = {
+            \   'name': 'myClipboard',
+            \   'copy': {
+            \       '*': 'clip.exe',
+            \       '+': 'clip.exe'
+            \   },
+            \   'paste': {
+            \       '*': 'powershell.exe -command [Console]::Out.Write($(get-clipboard -raw).tostring().replace("`r", ""))',
+            \       '+': 'powershell.exe -command [Console]::Out.Write($(get-clipboard -raw).tostring().replace("`r", ""))'
+            \   },
+            \   'cache_enabled': 1
+            \ }
 
 "Hotkey
 "jump between buffers and tabs
