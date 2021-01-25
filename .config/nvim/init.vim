@@ -11,6 +11,8 @@ Plug 'easymotion/vim-easymotion'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "snippets
 Plug 'honza/vim-snippets'
+"bookmarks
+Plug 'MattesGroeger/vim-bookmarks'
 "git wrapper
 Plug 'tpope/vim-fugitive'
 "auto pairs
@@ -50,20 +52,6 @@ set signcolumn=yes
 "multiple windows
 set splitright
 set splitbelow
-
-"Clipboard
-let g:clipboard = {
-            \   'name': 'myClipboard',
-            \   'copy': {
-            \       '*': 'clip.exe',
-            \       '+': 'clip.exe'
-            \   },
-            \   'paste': {
-            \       '*': 'powershell.exe -command [Console]::Out.Write($(get-clipboard -raw).tostring().replace("`r", ""))',
-            \       '+': 'powershell.exe -command [Console]::Out.Write($(get-clipboard -raw).tostring().replace("`r", ""))'
-            \   },
-            \   'cache_enabled': 1
-            \ }
 
 "Hotkey
 "jump between buffers and tabs
@@ -117,11 +105,6 @@ nnoremap <leader>b :<C-u>CocList buffers<CR>
 nnoremap <leader>f :<C-u>CocList files<CR>
 nnoremap <leader>p :<C-u>CocList grep<CR>
 nnoremap <leader>y :<C-u>CocList -A --normal yank<CR>
-nnoremap mm :<C-u>CocCommand bookmark.toggle<CR>
-nnoremap mi :<C-u>CocCommand bookmark.annotate<CR>
-nnoremap [m :<C-u>CocCommand bookmark.prev<CR>
-nnoremap ]m :<C-u>CocCommand bookmark.next<CR>
-nnoremap ma :<C-u>CocList --normal bookmark<CR>
 
 "Command
 "highlight current symbol
@@ -142,6 +125,5 @@ let g:coc_global_extensions = [
             \   "coc-yank",
             \   "coc-lists",
             \   "coc-highlight",
-            \   "coc-bookmark",
             \   "coc-git"
             \ ]
