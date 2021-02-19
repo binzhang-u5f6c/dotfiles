@@ -74,7 +74,7 @@ pacstrap /mnt intel-ucode amd-ucode
 
 ### 2.2 Configure the system
 
-Generate an fstab file.
+Generate a fstab file.
 
 ```bash
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -90,6 +90,12 @@ Set the time zone.
 
 ```bash
 ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+```
+
+Set the Hardware Clock as local time.
+
+```bash
+hwclock --systohc --localtime
 ```
 
 Edit `/etc/locale.gen` and uncomment `en_US.UTF-8`.
@@ -154,7 +160,7 @@ Create a boot entry for Arch Linux.
 map
 ls FS0:
 bcfg boot dump
-bcfg boot add N FS0:\vmlinuz-linux "Arch Linux"
+bcfg boot add N FS0:\vmlinuz-linux-lts "Arch Linux"
 ```
 
 Create a text file.
@@ -166,7 +172,7 @@ edit FS0:\options.txt
 Write following kernel options into it.
 
 ```plain
- root=/dev/root_partition initrd=\cpu_manufacturer-ucode.img initrd=\initramfs-linux.img
+ root=/dev/root_partition initrd=\cpu_manufacturer-ucode.img initrd=\initramfs-linux-lts.img
 ```
 
 Press `F2` to save and `F3` to exit.
@@ -198,10 +204,9 @@ pacman -Syu
 Install some programming languages which may be needed when making packages.
 
 ```bash
-pacman -S perl ruby
 pacman -S python python-pip
 pacman -S nodejs npm yarn
-pacman -S go
+pacman -S ruby go
 ```
 
 Install download tools.
@@ -243,9 +248,12 @@ Install KDE desktop environment.
 ```bash
 yay -S plasma sddm
 systemctl enable sddm.service
-yay -S kde-system-meta kde-utilities-meta kde-graphics-meta
+yay -S kde-system-meta
+yay -S kde-utilities-meta
+yay -S kde-graphics-meta
 yay -S kde-accessibility-meta
-yay -S xdg-user-dirs xclip
+yay -S xdg-user-dirs
+yay -S xclip
 ```
 
 Install fonts.
@@ -264,7 +272,7 @@ yay -S rsync rclone
 yay -S ripgrep fzf
 yay -S fcitx-im fcitx-googlepinyin kcm-fcitx
 yay -S keepassxc goldendict vlc
-yay -S firefox
+yay -S google-chrome
 ```
 
 Add the following to `~/.ssh/config`.
@@ -294,12 +302,20 @@ cd
 
 ## 5. Configure development environment
 
-### 5.1 Install and configure neovim
+### 5.1 Configure neovim
+
+Change npm's default directory.
+
+```bash
+npm config set prefix '~/.local'
+```
 
 Install python/nodejs/ruby providers of neovim.
 
 ```bash
-yay -S python-pynvim nodejs-neovim ruby-neovim
+pip install --user pynvim
+npm install -g neovim
+gem install neovim
 ```
 
 Install neovim plugins.
@@ -340,12 +356,6 @@ pip install pandas scikit-learn scikit-multiflow
 
 ### 5.3 Install LSP
 
-Change npm's default directory.
-
-```bash
-npm config set prefix '~/.local'
-```
-
 Install markdown linter.
 
 ```bash
@@ -381,10 +391,8 @@ yay -S hugo
 Download blogs repository.
 
 ```bash
-mkdir Studio
-git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.source.git Studio/00.Site
-
-cd Studio/00.Site
+git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.source.git Blogs
+cd Blogs
 git submodule init
 git submodule update
 ```
