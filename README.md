@@ -69,7 +69,8 @@ pacstrap /mnt networkmanager neovim
 Install CPU microcode according to your CPU.
 
 ```bash
-pacstrap /mnt intel-ucode amd-ucode
+pacstrap /mnt intel-ucode
+pacstrap /mnt amd-ucode
 ```
 
 ### 2.2 Configure the system
@@ -251,7 +252,6 @@ systemctl enable sddm.service
 yay -S kde-system-meta
 yay -S kde-utilities-meta
 yay -S kde-graphics-meta
-yay -S kde-accessibility-meta
 yay -S xdg-user-dirs
 yay -S xclip
 ```
@@ -269,17 +269,10 @@ yay -S ttf-nerd-fonts-symbols
 yay -S man-db man-pages
 yay -S p7zip openssh wget
 yay -S rsync rclone
-yay -S ripgrep fzf
+yay -S tmux ripgrep fzf
 yay -S fcitx-im fcitx-googlepinyin kcm-fcitx
 yay -S keepassxc goldendict vlc
 yay -S google-chrome
-```
-
-Add the following to `~/.ssh/config`.
-
-```plain
-Host *
-    ServerAliveInterval 60
 ```
 
 Generate ssh key,
@@ -288,7 +281,12 @@ Generate ssh key,
 ssh-keygen -t rsa -b 4096 -C "your_email"
 ```
 
-and add your public key to Github.
+and add your public key to Github. Add the following to `~/.ssh/config`.
+
+```plain
+Host *
+    ServerAliveInterval 60
+```
 
 ## 4. Download the dotfiles
 
@@ -348,7 +346,7 @@ and install data science packages.
 mkdir VirtualEnv
 python -m venv VirtualEnv/DataScience
 source VirtualEnv/DataScience/bin/activate
-pip install ipykernel
+pip install pynvim ipykernel
 python -m ipykernel install --name name
 pip install numpy scipy matplotlib
 pip install pandas scikit-learn scikit-multiflow
@@ -368,10 +366,10 @@ Install bash language server.
 npm install -g bash-language-server
 ```
 
-Install ccls.
+Install clang.
 
 ```bash
-yay -S ccls
+yay -S llvm clang
 ```
 
 Install python language server.
