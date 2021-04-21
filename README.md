@@ -252,6 +252,11 @@ systemctl enable sddm.service
 yay -S kde-system-meta
 yay -S kde-utilities-meta
 yay -S kde-graphics-meta
+```
+
+Install XDG user directory tool and clipboard.
+
+```bash
 yay -S xdg-user-dirs
 yay -S xclip
 ```
@@ -332,10 +337,10 @@ Use `:PlugInstall` in neovim to install vim plugins.
 ```bash
 pip install --user jupyterlab
 pip install --user jupyter-lsp
-jupyter labextension install @jupyterlab/toc --no-build
-jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
-jupyter labextension install @arbennett/base16-solarized-light --no-build
-jupyter labextension install @krassowski/jupyterlab-lsp --no-build
+jupyter labextension install --no-build @jupyterlab/toc
+jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager
+jupyter labextension install --no-build @arbennett/base16-solarized-light
+jupyter labextension install --no-build @krassowski/jupyterlab-lsp
 jupyter lab build
 ```
 
@@ -358,6 +363,12 @@ Install markdown linter.
 
 ```bash
 npm install -g markdownlint-cli
+```
+
+Install Tex Live and texlab.
+
+```bash
+yay -S texlive-most biber texlab
 ```
 
 Install bash language server.

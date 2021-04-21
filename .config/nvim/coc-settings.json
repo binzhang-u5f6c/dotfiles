@@ -51,6 +51,12 @@
           }
         }
       }
+    },
+    "latex": {
+      "command": "texlab",
+      "filetypes": ["tex", "bib", "plaintext", "context"],
+      "trace.server": "verbose",
+      "ignoredRootPaths": ["~"]
     }
   }
 }
