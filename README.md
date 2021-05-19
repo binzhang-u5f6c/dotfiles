@@ -274,7 +274,6 @@ yay -S ttf-nerd-fonts-symbols
 yay -S man-db man-pages
 yay -S p7zip openssh wget
 yay -S rsync rclone
-yay -S tmux ripgrep fzf
 yay -S fcitx-im fcitx-googlepinyin kcm-fcitx
 yay -S keepassxc goldendict vlc
 yay -S google-chrome
@@ -304,6 +303,12 @@ cd
 ```
 
 ## 5. Configure development environment
+
+Install development utilities.
+
+```bash
+yay -S tmux ripgrep fzf
+```
 
 ### 5.1 Configure neovim
 
@@ -336,11 +341,9 @@ Use `:PlugInstall` in neovim to install vim plugins.
 
 ```bash
 pip install --user jupyterlab
-pip install --user jupyter-lsp
 jupyter labextension install --no-build @jupyterlab/toc
 jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager
 jupyter labextension install --no-build @arbennett/base16-solarized-light
-jupyter labextension install --no-build @krassowski/jupyterlab-lsp
 jupyter lab build
 ```
 
