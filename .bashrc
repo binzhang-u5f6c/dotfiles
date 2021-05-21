@@ -21,6 +21,10 @@ function nonzero_return {
 
 PS1='\[\033[34m\]\W\[\033[31m\]$(nonzero_return)\[\033[0m\] \$ '
 
+# local PATH
+
+export PATH=~/.local/bin:PATH
+
 # cat image
 function icat {
     width=""

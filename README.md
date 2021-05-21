@@ -1,7 +1,5 @@
 # Developing on ArchWSL
 
-[[toc]]
-
 ## 1. Install essential softwares
 
 Install essential softwares after Windows 10 installation.
@@ -9,8 +7,8 @@ Install essential softwares after Windows 10 installation.
 * [7zip](https://www.7-zip.org)
 * [keepassxc](https://keepassxc.org)
 * [goldendict](https://www.github.com/goldendict/goldendict/wiki/Early-Access-Builds-for-Windows)
+* [vlc](https://www.videolan.org)
 * [ccleaner](https://www.ccleaner.org)
-* [potplayer](https://potplayer.daum.net)
 
 ## 2. Install ArchWSL
 
@@ -95,20 +93,21 @@ Update and install basic system.
 ```bash
 pacman -Syu
 pacman -S base base-devel
-pacman -S man-db man-pages
 ```
 
 Install some programming languages which may be needed when making packages.
 
 ```bash
-pacman -S perl python ruby go
+pacman -S python python-pip
+pacman -S nodejs npm yarn
+pacman -S perl ruby go
 ```
 
 Install download tools.
 (Git is a version control system but it is often used as a download tool.)
 
 ```bash
-pacman -S git wget
+pacman -S git
 git config --global user.name "your_name"
 git config --global user.email your_email
 ```
@@ -127,9 +126,18 @@ yay
 Install other softwares.
 
 ```bash
-yay -S p7zip openssh rsync
-yay -S ripgrep fzf
+yay -S man-db man-pages
+yay -S p7zip openssh wget
+yay -S rsync rclone
 ```
+
+Generate ssh key,
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "your_email"
+```
+
+and add your public key to Github.
 
 Add following content to `~/.ssh/config`.
 
@@ -138,13 +146,6 @@ Host *
     ServerAliveInterval 60
 ```
 
-Generate ssh key.
-
-```bash
-ssh-keygen -t rsa -b 4096 -C "your_email"
-```
-
-Add your public key to Github.
 
 ## 4. Download the dotfiles
 
@@ -158,16 +159,27 @@ cd
 
 ## 5. Configure development environment
 
+Install development utilities.
+
+```bash
+yay -S fd ripgrep fzf tmux
+```
+
 ### 5.1. Install and configure neovim
 
-Install neovim.
+Change npm's default directory.
+
+```bash
+npm config set prefix '~/.local'
+```
+
+Install neovim and python/nodejs/ruby providers of neovim.
 
 ```bash
 yay -S neovim
-yay -S python-pip
-pip install pynvim
-yay -S nodejs npm yarn
+pip install --user pynvim
 npm install -g neovim
+gem install neovim
 ```
 
 Install neovim plugins.
@@ -186,20 +198,24 @@ Use `:PlugInstall` in neovim to install plugins.
 Install Jupyter lab and some extensions.
 
 ```bash
-pip install jupyterlab
-pip install ipywidgets
-pip install jupyter-lsp
-jupyter labextension install @jupyterlab/toc --no-build
-jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
-jupyter labextension install @arbennett/base16-solarized-light --no-build
-jupyter labextension install @krassowski/jupyterlab-lsp --no-build
-jupyter labextension install jupyterlab-drawio --no-build
+pip install --user jupyterlab
+pip install --user ipywidgets
+jupyter labextension install --no-build @jupyterlab/toc
+jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager
+jupyter labextension install --no-build @arbennett/base16-solarized-light
 jupyter lab build
 ```
 
-Install some data science packages.
+Create a virtual environment,
+register an iPython kernel,
+and install data science packages.
 
 ```bash
+mkdir VirtualEnv
+python -m venv VirtualEnv/DataScience
+source VirtualEnv/DataScience/bin/activate
+pip install pynvim ipykernel
+python -m ipykernel install --name name
 pip install numpy scipy matplotlib
 pip install pandas scikit-learn scikit-multiflow
 ```
@@ -218,16 +234,16 @@ Install bash language server.
 npm install -g bash-language-server
 ```
 
-Install ccls.
+Install clang.
 
 ```bash
-yay -S ccls
+yay -S llvm clang
 ```
 
 Install python language server.
 
 ```bash
-pip install python-language-server[all]
+pip install --user python-language-server[all]
 ```
 
 ## 6. Download blogs
@@ -241,9 +257,8 @@ yay -S hugo
 Download blogs repository.
 
 ```bash
-git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.source.git ~/Site
-
-cd ~/Site
+git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.git Blogs
+cd Blogs
 git submodule init
 git submodule update
 ```
