@@ -207,7 +207,7 @@ Install some programming languages which may be needed when making packages.
 ```bash
 pacman -S python python-pip
 pacman -S nodejs npm yarn
-pacman -S ruby go
+pacman -S perl ruby go
 ```
 
 Install download tools.
@@ -307,7 +307,7 @@ cd
 Install development utilities.
 
 ```bash
-yay -S tmux ripgrep fzf
+yay -S fd ripgrep fzf tmux
 ```
 
 ### 5.1 Configure neovim
@@ -341,6 +341,7 @@ Use `:PlugInstall` in neovim to install vim plugins.
 
 ```bash
 pip install --user jupyterlab
+pip install --user ipywidgets
 jupyter labextension install --no-build @jupyterlab/toc
 jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager
 jupyter labextension install --no-build @arbennett/base16-solarized-light
@@ -403,7 +404,7 @@ yay -S hugo
 Download blogs repository.
 
 ```bash
-git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.source.git Blogs
+git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.git Blogs
 cd Blogs
 git submodule init
 git submodule update
