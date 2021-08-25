@@ -11,7 +11,6 @@ alias sl='ls -alh'
 alias grep='grep --color'
 alias pbcopy='clip.exe'
 alias pbpaste='powershell.exe -command get-clipboard -raw | tr -d "\r"'
-alias jupyterlab='jupyter lab --no-browser'
 
 # prompt
 function nonzero_return {

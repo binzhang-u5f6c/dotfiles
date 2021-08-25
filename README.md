@@ -20,21 +20,6 @@ dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux 
 
 Download [ArchWSL](https://github.com/yuk7/ArchWSL).
 Run `Arch.exe` to extract rootfs and register to WSL.
-Run `Arch.exe` again and set root password via `passwd`.
-Add user and set user's password.
-
-```bash
-useradd -m -G wheel your_name
-passwd your_name
-```
-
-Edit `/etc/sudoer` via `EDITOR=vim visudo` and comment out the line
-`%wheel ALL=(ALL) ALL` to make new user access to `sudo`.
-Exit the system and set up the default user.
-
-```PS
-Arch.exe config --default-user your_name
-```
 
 Open PowerShell as Administrator and
 enable the Virtual Machine Platform feature.
@@ -50,6 +35,22 @@ Set the ArchWSL to WSL2 after restarting.
 ```PS
 wsl --set-version Arch 2
 wsl --list --verbose
+```
+
+Run `Arch.exe` again and set root password via `passwd`.
+Add user and set user's password.
+
+```bash
+useradd -m -G wheel your_name
+passwd your_name
+```
+
+Edit `/etc/sudoer` via `EDITOR=vim visudo` and comment out the line
+`%wheel ALL=(ALL) ALL` to make new user access to `sudo`.
+Exit the system and set up the default user.
+
+```PS
+Arch.exe config --default-user your_name
 ```
 
 [Download](https://github.com/mintty/wsltty) and install WSLtty.
@@ -127,8 +128,7 @@ Install other softwares.
 
 ```bash
 yay -S man-db man-pages
-yay -S p7zip openssh wget
-yay -S rsync rclone
+yay -S p7zip openssh rsync wget
 ```
 
 Generate ssh key,
@@ -152,6 +152,7 @@ Host *
 ```bash
 git clone git@github.com:binzhang-u5f6c/dotfiles.git .dotfiles
 cd .dotfiles
+git checkout wsl
 chmod 755 install.sh
 ./install.sh
 cd
@@ -176,6 +177,7 @@ npm config set prefix '~/.local'
 Install neovim and python/nodejs/ruby providers of neovim.
 
 ```bash
+yay -Rsc vim
 yay -S neovim
 pip install --user pynvim
 npm install -g neovim
@@ -193,34 +195,7 @@ nvim .config/nvim/init.vim
 
 Use `:PlugInstall` in neovim to install plugins.
 
-### 5.2. Install and configure Jupyter
-
-Install Jupyter lab and some extensions.
-
-```bash
-pip install --user jupyterlab
-pip install --user ipywidgets
-jupyter labextension install --no-build @jupyterlab/toc
-jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager
-jupyter labextension install --no-build @arbennett/base16-solarized-light
-jupyter lab build
-```
-
-Create a virtual environment,
-register an iPython kernel,
-and install data science packages.
-
-```bash
-mkdir VirtualEnv
-python -m venv VirtualEnv/DataScience
-source VirtualEnv/DataScience/bin/activate
-pip install pynvim ipykernel
-python -m ipykernel install --name name
-pip install numpy scipy matplotlib
-pip install pandas scikit-learn scikit-multiflow
-```
-
-### 5.3. Install LSP
+### 5.2. Install LSP
 
 Install markdown linter.
 
