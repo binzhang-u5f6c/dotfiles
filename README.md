@@ -8,35 +8,17 @@ Install essential softwares after Windows 10 installation.
 * [keepassxc](https://keepassxc.org)
 * [goldendict](https://www.github.com/goldendict/goldendict/wiki/Early-Access-Builds-for-Windows)
 * [vlc](https://www.videolan.org)
-* [ccleaner](https://www.ccleaner.org)
 
 ## 2. Install ArchWSL
 
-Open PowerShell as Administrator and enable the WSL feature.
+Open PowerShell as Administrator and install WSL.
 
 ```PS
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+wsl --install
 ```
 
 Download [ArchWSL](https://github.com/yuk7/ArchWSL).
 Run `Arch.exe` to extract rootfs and register to WSL.
-
-Open PowerShell as Administrator and
-enable the Virtual Machine Platform feature.
-
-```PS
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-```
-
-[Download](https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel)
-and install Linux kernel update package.
-Set the ArchWSL to WSL2 after restarting.
-
-```PS
-wsl --set-version Arch 2
-wsl --list --verbose
-```
-
 Run `Arch.exe` again and set root password via `passwd`.
 Add user and set user's password.
 
@@ -92,43 +74,25 @@ pacman-key --populate
 Update and install basic system.
 
 ```bash
-pacman -Syu
+pacman -Sy archlinux-keyring && pacman -Syu
 pacman -S base base-devel
 ```
 
-Install some programming languages which may be needed when making packages.
+Install some programming languages which are dependencies
+of many useful tools.
 
 ```bash
 pacman -S python python-pip
 pacman -S nodejs npm yarn
-pacman -S perl ruby go
 ```
 
-Install download tools.
-(Git is a version control system but it is often used as a download tool.)
+Install utilities and config git.
 
 ```bash
-pacman -S git
+pacman -S man-db man-pages
+pacman -S p7zip openssh git wget rsync
 git config --global user.name "your_name"
 git config --global user.email your_email
-```
-
-Install yay for package management of Arch User Repository.
-
-```bash
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-cd ..
-rm -rf yay
-yay
-```
-
-Install other softwares.
-
-```bash
-yay -S man-db man-pages
-yay -S p7zip openssh rsync wget
 ```
 
 Generate ssh key,
@@ -163,7 +127,7 @@ cd
 Install development utilities.
 
 ```bash
-yay -S fd ripgrep fzf tmux
+pacman -S fd ripgrep fzf tmux
 ```
 
 ### 5.1. Install and configure neovim
@@ -177,11 +141,10 @@ npm config set prefix '~/.local'
 Install neovim and python/nodejs/ruby providers of neovim.
 
 ```bash
-yay -Rsc vim
-yay -S neovim
+pacman -Rsc vim
+pacman -S neovim
 pip install --user pynvim
 npm install -g neovim
-gem install neovim
 ```
 
 Install neovim plugins.
@@ -195,52 +158,25 @@ nvim .config/nvim/init.vim
 
 Use `:PlugInstall` in neovim to install plugins.
 
-### 5.2. Install LSP
-
-Install markdown linter.
+### 5.2 Install Jupyter lab and some extensions
 
 ```bash
-npm install -g markdownlint-cli
+pip install --user jupyterlab
+jupyter labextension install --no-build @jupyterlab/toc
+jupyter labextension install --no-build @arbennett/base16-solarized-light
+jupyter lab build
 ```
 
-Install bash language server.
+Create a virtual environment, register an iPython kernel,
+and install data science packages.
 
 ```bash
-npm install -g bash-language-server
-```
-
-Install clang.
-
-```bash
-yay -S llvm clang
-```
-
-Install python language server.
-
-```bash
-pip install --user python-language-server[all]
-```
-
-## 6. Download blogs
-
-Install hugo for static site generation.
-
-```bash
-yay -S hugo
-```
-
-Download blogs repository.
-
-```bash
-git clone git@github.com:binzhang-u5f6c/binzhang-u5f6c.github.io.git Blogs
-cd Blogs
-git submodule init
-git submodule update
-```
-
-Generate the site.
-
-```bash
-hugo
-hugo server
+mkdir Virtualenv
+python -m venv Virtualenv
+source VirtualEnv/bin/activate
+pip install pynvim ipykernel
+python -m ipykernel install --user --name name
+pip install python-language-server[all]
+pip install numpy scipy matplotlib
+pip install pandas scikit-learn scikit-multiflow
 ```

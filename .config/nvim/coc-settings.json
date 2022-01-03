@@ -14,12 +14,6 @@
       "trace.server": "verbose",
       "ignoredRootPaths": ["~"]
     },
-    "clangd": {
-      "command": "clangd",
-      "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
-      "trace.server": "verbose",
-      "rootPatterns": ["compile_flags.txt", "compile_commands.json"]
-    },
     "python": {
       "command": "python",
       "args": ["-m", "pyls", "-vv", "--log-file", "/tmp/lsp_pyls.log"],
