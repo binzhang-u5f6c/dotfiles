@@ -125,10 +125,3 @@ let g:coc_global_extensions = [
             \   "coc-highlight",
             \   "coc-git"
             \ ]
-
-"Latex previewing
-function! s:latexmk()
-    exec ":!latexmk -pdf -interaction=nostopmode -synctex=1 main.tex"
-    exec ":!zathura --synctex-forward ".line(".").":".col(".").":% main.pdf"
-endfunction
-command! -nargs=0 LatexMake :call <SID>latexmk()

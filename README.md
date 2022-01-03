@@ -39,6 +39,7 @@ another partition for swap.
 Format the partitions.
 
 ```bash
+mkfs.fat -F 32 /dev/boot_partition
 mkfs.ext4 /dev/root_partition
 mkswap /dev/swap_partition
 ```
@@ -58,11 +59,12 @@ swapon /dev/swap_partition
 ### 2.1 Install basic Linux
 
 Select proper mirrors in `/etc/pacman.d/mirrorlist`.
-Install Linux, network manager and a text editor.
+Install Linux, boot loader, network manager and a text editor.
 
 ```bash
 pacstrap /mnt base base-devel
 pacstrap /mnt linux-lts linux-firmware
+pacstrap /mnt grub efibootmgr
 pacstrap /mnt networkmanager neovim
 ```
 
@@ -145,7 +147,14 @@ Edit `/etc/sudoers` via `EDITOR=nvim visudo`.
 Comment out the line `%wheel ALL=(ALL) ALL` to
 make the new user access to `sudo`.
 
-### 2.4 Add boot entry
+### 2.4 Boot loader
+
+Install the GRUB and generate the configuration file.
+
+```bash
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
+```
 
 Exit the chroot environment. Unmount all the partitions.
 
@@ -153,41 +162,7 @@ Exit the chroot environment. Unmount all the partitions.
 umount -R /mnt
 ```
 
-Reboot the machine to UEFI shell,
-which is accessed in Arch Linux installation image.
-Create a boot entry for Arch Linux.
-
-```plain
-map
-ls FS0:
-bcfg boot dump
-bcfg boot add N FS0:\vmlinuz-linux-lts "Arch Linux"
-```
-
-Create a text file.
-
-```plain
-edit FS0:\options.txt
-```
-
-Write following kernel options into it.
-
-```plain
- root=/dev/root_partition initrd=\cpu_manufacturer-ucode.img initrd=\initramfs-linux-lts.img
-```
-
-Press `F2` to save and `F3` to exit.
-Add the option file to the boot entry.
-
-```plain
-bcfg boot -opt N FS0:\options.txt
-```
-
-Remove the boot entry when necessary.
-
-```plain
-bcfg boot rm N
-```
+Reboot.
 
 ## 3. Post-installation
 
@@ -238,10 +213,11 @@ Install Xorg.
 yay -S xorg-server xorg-apps
 ```
 
-Install Nvidia driver.
+Install video driver.
 
 ```bash
 yay -S nvidia-lts
+yay -S xf86-video-amdgpu
 ```
 
 Install KDE desktop environment.
@@ -254,10 +230,9 @@ yay -S kde-utilities-meta
 yay -S kde-graphics-meta
 ```
 
-Install XDG user directory tool and clipboard.
+Install clipboard.
 
 ```bash
-yay -S xdg-user-dirs
 yay -S xclip
 ```
 
@@ -276,7 +251,7 @@ yay -S p7zip openssh wget
 yay -S rsync rclone
 yay -S fcitx-im fcitx-googlepinyin kcm-fcitx
 yay -S keepassxc goldendict vlc
-yay -S google-chrome
+yay -S firefox chromium
 ```
 
 Generate ssh key,
@@ -337,42 +312,12 @@ nvim .config/nvim/init.vim
 
 Use `:PlugInstall` in neovim to install vim plugins.
 
-### 5.2 Install Jupyter lab and some extensions
-
-```bash
-pip install --user jupyterlab
-pip install --user ipywidgets
-jupyter labextension install --no-build @jupyterlab/toc
-jupyter labextension install --no-build @jupyter-widgets/jupyterlab-manager
-jupyter labextension install --no-build @arbennett/base16-solarized-light
-jupyter lab build
-```
-
-Create a virtual environment, register an iPython kernel,
-and install data science packages.
-
-```bash
-mkdir VirtualEnv
-python -m venv VirtualEnv/DataScience
-source VirtualEnv/DataScience/bin/activate
-pip install pynvim ipykernel
-python -m ipykernel install --name name
-pip install numpy scipy matplotlib
-pip install pandas scikit-learn scikit-multiflow
-```
-
-### 5.3 Install LSP
+### 5.2 Install LSP
 
 Install markdown linter.
 
 ```bash
 npm install -g markdownlint-cli
-```
-
-Install Tex Live and texlab.
-
-```bash
-yay -S texlive-most biber texlab
 ```
 
 Install bash language server.
