@@ -249,7 +249,7 @@ yay -S ttf-nerd-fonts-symbols
 yay -S man-db man-pages
 yay -S p7zip openssh wget
 yay -S rsync rclone
-yay -S fcitx-im fcitx-googlepinyin kcm-fcitx
+yay -S fcitx5-im fcitx5-chinese-addons kcm-fcitx
 yay -S keepassxc goldendict vlc
 yay -S firefox chromium
 ```
