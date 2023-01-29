@@ -240,7 +240,7 @@ Install fonts.
 
 ```bash
 yay -S noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
-yay -S ttf-nerd-fonts-symbols
+yay -S ttf-nerd-fonts-symbols-2048-em ttf-nerd-fonts-symbols-2048-em-mono
 ```
 
 ### 3.3 Install utilities and softwares
@@ -249,7 +249,7 @@ yay -S ttf-nerd-fonts-symbols
 yay -S man-db man-pages
 yay -S p7zip openssh wget
 yay -S rsync rclone
-yay -S fcitx5-im fcitx5-chinese-addons kcm-fcitx
+yay -S fcitx5-im fcitx5-chinese-addons
 yay -S keepassxc goldendict vlc
 yay -S firefox chromium
 ```
@@ -314,18 +314,6 @@ Use `:PlugInstall` in neovim to install vim plugins.
 
 ### 5.2 Install LSP
 
-Install markdown linter.
-
-```bash
-npm install -g markdownlint-cli
-```
-
-Install bash language server.
-
-```bash
-npm install -g bash-language-server
-```
-
 Install clang.
 
 ```bash
@@ -336,6 +324,18 @@ Install python language server.
 
 ```bash
 pip install --user python-language-server[all]
+```
+
+Install bash language server.
+
+```bash
+npm install -g bash-language-server
+```
+
+Install markdown linter.
+
+```bash
+npm install -g markdownlint-cli
 ```
 
 ## 6. Download blogs
