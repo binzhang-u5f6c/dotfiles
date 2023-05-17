@@ -22,35 +22,24 @@
     },
     "python": {
       "command": "python",
-      "args": ["-m", "pyls", "-vv", "--log-file", "/tmp/lsp_pyls.log"],
+      "args": ["-m", "pylsp", "-v", "--log-file", "/tmp/lsp_pylsp.log"],
       "filetypes": ["python"],
       "trace.server": "verbose",
       "settings": {
-        "pyls": {
-          "enabled": true,
-          "trace": {"server": "verbose"},
-          "commandPath": "",
-          "configurationSource": ["pycodestyle"],
+        "pylsp": {
+          "configurationSource": ["flake8"],
           "plugins": {
-            "jedi_completion": {"enabled": true},
-            "jedi_hover": {"enabled": true},
-            "jedi_reference": {"enabled": true},
-            "jedi_signature_help": {"enabled": true},
-            "jedi_symbols": {"enabled": true, "all_scopes": true},
-            "mccabe": {"enabled": true, "threshold": 15},
-            "preload": {"enabled": true},
-            "pycodestyle": {"enabled": true},
-            "pydocstyle": {
-              "enabled": true,
-              "match": "(?!test_).*\\.py",
-              "matchDir": "[^\\.].*"
-            },
-            "pyflakes": {"enabled": true},
-            "rope_completion": {"enabled": true},
+            "pyflakes": {"enabled": false},
+            "mccabe": {"enabled": false},
+            "pycodestyle": {"enabled": false},
+            "flake8": {"enabled": true},
+            "pydocstyle": {"enabled": true},
+            "autopep8": {"enabled": false},
             "yapf": {"enabled": true}
           }
         }
       }
     }
-  }
+  },
+  "snippets.ultisnips.pythonPrompt": false
 }

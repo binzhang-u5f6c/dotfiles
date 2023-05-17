@@ -63,17 +63,17 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 nmap <leader>s <Plug>(easymotion-overwin-f2)
 "coc
 "use <tab> for trigger completion and navigate to the next item
-function! s:check_back_space() abort
+function! CheckBackSpace() abort
     let col = col('.') - 1
-    return !col || getline('.')[col - 1] =~ '\s'
+    return !col || getline('.')[col - 1] =~# '\s'
 endfunction
 inoremap <silent><expr> <Tab>
-    \ pumvisible() ? "\<C-n>" :
-    \ <SID>check_back_space() ? "\<Tab>" :
+    \ coc#pum#visible() ? coc#pum#next(1) :
+    \ CheckBackSpace() ? "\<Tab>" :
     \ coc#refresh()
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#comfirm()
+    \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 "snippet expand
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 "navigate diagnostics
@@ -85,14 +85,14 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 "show documentation
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-    if (index(['vim', 'help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
+function! ShowDocumentation()
+    if CocAction('hasProvider', 'hover')
+        call CocActionAsync('doHover')
     else
-        call CocAction('doHover')
+        call feedkeys('K', 'in')
     endif
 endfunction
+nnoremap <silent> K :call ShowDocumentation()<CR>
 "rename
 nmap <leader>r <Plug>(coc-rename)
 "open coc list

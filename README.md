@@ -216,8 +216,8 @@ yay -S xorg-server xorg-apps
 Install video driver.
 
 ```bash
-yay -S nvidia-lts
-yay -S xf86-video-amdgpu
+yay -S nvidia-lts nvidia-utils
+yay -S xf86-video-amdgpu mesa
 ```
 
 Install KDE desktop environment.
@@ -250,8 +250,7 @@ yay -S man-db man-pages
 yay -S p7zip openssh wget
 yay -S rsync rclone
 yay -S fcitx5-im fcitx5-chinese-addons
-yay -S keepassxc goldendict vlc
-yay -S firefox chromium
+yay -S keepassxc goldendict vlc chromium
 ```
 
 Generate ssh key,
@@ -293,12 +292,11 @@ Change npm's default directory.
 npm config set prefix '~/.local'
 ```
 
-Install python/nodejs/ruby providers of neovim.
+Install python/nodejs providers of neovim.
 
 ```bash
 pip install --user pynvim
 npm install -g neovim
-gem install neovim
 ```
 
 Install neovim plugins.
@@ -323,7 +321,7 @@ yay -S llvm clang
 Install python language server.
 
 ```bash
-pip install --user python-language-server[all]
+pip install --user python-lsp-server[all]
 ```
 
 Install bash language server.
