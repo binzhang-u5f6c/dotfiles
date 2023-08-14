@@ -19,10 +19,11 @@ For WiFi refer to [here](https://wiki.archlinux.org/index.php/iwd#iwctl).
 ping wiki.archlinux.org
 ```
 
-Update the system clock
+In the living environment, systemd-timesyncd is enabled by default.
+Just ensure the system clock is accurate.
 
 ```bash
-timedatectl set-ntp true
+timedatectl
 ```
 
 ### 1.3 Partition the disks
@@ -31,6 +32,7 @@ Show all disks and partitions.
 
 ```bash
 fdisk -l
+fdisk /dev/the_disk_to_be_partitioned
 ```
 
 Create a partition for `/`, a partition for `/boot` and
@@ -62,10 +64,10 @@ Select proper mirrors in `/etc/pacman.d/mirrorlist`.
 Install Linux, boot loader, network manager and a text editor.
 
 ```bash
-pacstrap /mnt base base-devel
-pacstrap /mnt linux-lts linux-firmware
-pacstrap /mnt grub efibootmgr
-pacstrap /mnt networkmanager neovim
+pacstrap -K /mnt base base-devel
+pacstrap -K /mnt linux-lts linux-firmware
+pacstrap -K /mnt grub efibootmgr
+pacstrap -K /mnt networkmanager neovim
 ```
 
 Install CPU microcode according to your CPU.
@@ -182,7 +184,6 @@ Install some programming languages which may be needed when making packages.
 ```bash
 pacman -S python python-pip
 pacman -S nodejs npm yarn
-pacman -S perl ruby go
 ```
 
 Install download tools.
@@ -218,6 +219,7 @@ Install video driver.
 ```bash
 yay -S nvidia-lts nvidia-utils
 yay -S xf86-video-amdgpu mesa
+yay -S xf86-video-intel mesa
 ```
 
 Install KDE desktop environment.
@@ -239,8 +241,8 @@ yay -S xclip
 Install fonts.
 
 ```bash
-yay -S noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
-yay -S ttf-nerd-fonts-symbols-2048-em ttf-nerd-fonts-symbols-2048-em-mono
+yay -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
+yay -S ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-common ttf-nerd-fonts-symbols-mono
 ```
 
 ### 3.3 Install utilities and softwares

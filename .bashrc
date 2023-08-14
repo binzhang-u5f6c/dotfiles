@@ -19,36 +19,7 @@ function nonzero_return {
 PS1='\[\033[34m\]\W\[\033[31m\]$(nonzero_return)\[\033[0m\] \$ '
 
 # local PATH
-export PATH=~/.local/bin:$PATH
-
-# proxy
-function proxy_on {
-    export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com"
-
-    echo -n "server: "
-    read server
-    echo -n "port: "
-    read port
-
-    local proxy=$server:$port
-    export http_proxy=$proxy
-    export https_proxy=$proxy
-    export ftp_proxy=$proxy
-    export rsync_proxy=$proxy
-    export HTTP_PROXY=$proxy
-    export HTTPS_PROXY=$proxy
-    export FTP_PROXY=$proxy
-    export RSYNC_PROXY=$proxy
-}
-
-function proxy_off {
-    unset http_proxy
-    unset https_proxy
-    unset ftp_proxy
-    unset rsync_proxy
-    unset HTTP_PROXY
-    unset HTTPS_PROXY
-    unset FTP_PROXY
-    unset RSYNC_PROXY
-    echo -e "Proxy environment variables removed."
-}
+if ! [[ "$PATH" =~ "$HOME/.local/bin:" ]]; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+export PATH
