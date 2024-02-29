@@ -12,7 +12,6 @@ Boot the live environment.
 
 Ethernet is preferred.
 Plug in the cable, and DHCD will work out of the box.
-If not refer to [here](https://wiki.archlinux.org/index.php/Installation_guide#Connect_to_the_internet).
 For WiFi refer to [here](https://wiki.archlinux.org/index.php/iwd#iwctl).
 
 ```bash
@@ -73,17 +72,17 @@ pacstrap -K /mnt networkmanager neovim
 Install CPU microcode according to your CPU.
 
 ```bash
-pacstrap /mnt intel-ucode
-pacstrap /mnt amd-ucode
+pacstrap -K /mnt intel-ucode
+pacstrap -K /mnt amd-ucode
 ```
-
-### 2.2 Configure the system
 
 Generate a fstab file.
 
 ```bash
 genfstab -U /mnt >> /mnt/etc/fstab
 ```
+
+### 2.2 Configure the time and region
 
 Change root into the system.
 
@@ -110,6 +109,8 @@ Generate the locales.
 locale-gen
 ```
 
+### 2.3 Configure the network
+
 Create the hostname file `/etc/hostname`.
 
 ```plain
@@ -130,7 +131,7 @@ Enable the network manager daemon.
 systemctl enable NetworkManager.service
 ```
 
-### 2.3 User management
+### 2.4 User management
 
 Set the root password.
 
@@ -149,12 +150,13 @@ Edit `/etc/sudoers` via `EDITOR=nvim visudo`.
 Comment out the line `%wheel ALL=(ALL) ALL` to
 make the new user access to `sudo`.
 
-### 2.4 Boot loader
+### 2.5 Boot loader
 
 Install the GRUB and generate the configuration file.
 
 ```bash
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB \
+--moodules="tpm" --disable-shim-lock
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
@@ -178,13 +180,6 @@ pacman -Syu
 ```
 
 ### 3.1 Package Management
-
-Install some programming languages which may be needed when making packages.
-
-```bash
-pacman -S python python-pip
-pacman -S nodejs npm yarn
-```
 
 Install download tools.
 (Git is a version control system but it is often used as a download tool.)
@@ -242,7 +237,6 @@ Install fonts.
 
 ```bash
 yay -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
-yay -S ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-common ttf-nerd-fonts-symbols-mono
 ```
 
 ### 3.3 Install utilities and softwares
@@ -268,7 +262,7 @@ Host *
     ServerAliveInterval 60
 ```
 
-## 4. Download the dotfiles
+## 3.4 Download the dotfiles
 
 ```bash
 git clone git@github.com:binzhang-u5f6c/dotfiles.git .dotfiles
@@ -278,15 +272,20 @@ chmod 755 install.sh
 cd
 ```
 
-## 5. Configure development environment
+## 4. Configure development environment
 
 Install development utilities.
 
 ```bash
-yay -S fd ripgrep fzf tmux
+yay -S ripgrep fzf tmux
 ```
 
-### 5.1 Configure neovim
+Install some programming languages which may be needed.
+
+```bash
+pacman -S python python-pip
+pacman -S nodejs npm yarn
+```
 
 Change npm's default directory.
 
@@ -294,10 +293,12 @@ Change npm's default directory.
 npm config set prefix '~/.local'
 ```
 
+### 4.1 Configure neovim
+
 Install python/nodejs providers of neovim.
 
 ```bash
-pip install --user pynvim
+yay -S python-pynvim
 npm install -g neovim
 ```
 
@@ -312,7 +313,7 @@ nvim .config/nvim/init.vim
 
 Use `:PlugInstall` in neovim to install vim plugins.
 
-### 5.2 Install LSP
+### 4.2 Install LSP
 
 Install clang.
 
@@ -323,7 +324,8 @@ yay -S llvm clang
 Install python language server.
 
 ```bash
-pip install --user python-lsp-server[all]
+yay -S python-lsp-server
+yay -S python-pycodestyle python-pydocstyle flake8 yapf
 ```
 
 Install bash language server.
@@ -332,13 +334,7 @@ Install bash language server.
 npm install -g bash-language-server
 ```
 
-Install markdown linter.
-
-```bash
-npm install -g markdownlint-cli
-```
-
-## 6. Download blogs
+## 5. Download blogs
 
 Install hugo for static site generation.
 
