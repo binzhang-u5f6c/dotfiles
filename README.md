@@ -60,20 +60,17 @@ swapon /dev/swap_partition
 ### 2.1 Install basic Linux
 
 Select proper mirrors in `/etc/pacman.d/mirrorlist`.
-Install Linux, boot loader, network manager and a text editor.
+Install Linux, CPU microcode, boot loader, network manager and a text editor.
 
 ```bash
 pacstrap -K /mnt base base-devel
 pacstrap -K /mnt linux-lts linux-firmware
-pacstrap -K /mnt grub efibootmgr
-pacstrap -K /mnt networkmanager neovim
-```
-
-Install CPU microcode according to your CPU.
-
-```bash
+# select according to your CPU
 pacstrap -K /mnt intel-ucode
 pacstrap -K /mnt amd-ucode
+pacstrap -K /mnt grub efibootmgr
+pacstrap -K /mnt networkmanager neovim
+pacstrap -K /mnt man-db man-pages
 ```
 
 Generate a fstab file.
@@ -82,13 +79,13 @@ Generate a fstab file.
 genfstab -U /mnt >> /mnt/etc/fstab
 ```
 
-### 2.2 Configure the time and region
-
-Change root into the system.
+Then change root into the system.
 
 ```bash
 arch-chroot /mnt
 ```
+
+### 2.2 Configure the time and region
 
 Set the time zone.
 
@@ -109,20 +106,18 @@ Generate the locales.
 locale-gen
 ```
 
+Create `/etc/locale.conf`.
+
+```plain
+LANG=en_US.UTF-8
+```
+
 ### 2.3 Configure the network
 
 Create the hostname file `/etc/hostname`.
 
 ```plain
 hostname
-```
-
-Add matching entries to `/etc/hosts`.
-
-```plain
-127.0.0.1     localhost
-::1           localhost
-127.0.1.1     hostname.localdomain hostname
 ```
 
 Enable the network manager daemon.
@@ -156,7 +151,7 @@ Install the GRUB and generate the configuration file.
 
 ```bash
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB \
---moodules="tpm" --disable-shim-lock
+    --moodules="tpm" --disable-shim-lock
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
@@ -242,7 +237,6 @@ yay -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
 ### 3.3 Install utilities and softwares
 
 ```bash
-yay -S man-db man-pages
 yay -S p7zip openssh wget
 yay -S rsync rclone
 yay -S fcitx5-im fcitx5-chinese-addons
@@ -294,13 +288,6 @@ npm config set prefix '~/.local'
 ```
 
 ### 4.1 Configure neovim
-
-Install python/nodejs providers of neovim.
-
-```bash
-yay -S python-pynvim
-npm install -g neovim
-```
 
 Install neovim plugins.
 
