@@ -32,13 +32,22 @@
             "pyflakes": {"enabled": false},
             "mccabe": {"enabled": false},
             "pycodestyle": {"enabled": false},
-            "flake8": {"enabled": true},
+            "flake8": {
+                "enabled": true,
+                "ignore": ["E501", "W503", "W504"]
+            },
             "pydocstyle": {"enabled": true},
             "autopep8": {"enabled": false},
             "yapf": {"enabled": true}
           }
         }
       }
+    },
+    "rust": {
+      "command": "rust-analyzer",
+      "filetypes": ["rust"],
+      "trace.server": "verbose",
+      "rootPatterns": ["Cargo.toml"]
     }
   },
   "snippets.ultisnips.pythonPrompt": false

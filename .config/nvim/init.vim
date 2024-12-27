@@ -7,51 +7,53 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 "quick motion
 Plug 'easymotion/vim-easymotion'
-"auto complete
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "bookmarks
 Plug 'MattesGroeger/vim-bookmarks'
-"git wrapper
+"git integration
 Plug 'tpope/vim-fugitive'
 "auto pairs
 Plug 'jiangmiao/auto-pairs'
-"markdown preview
-Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
+"auto complete
+Plug 'neoclide/coc.nvim', {'commit': '2c7e7156f739e61b99c53662a968bb9213badbc4'}
 call plug#end()
 
-"Basic setting
+"Edit setting
 "file format
-set fileformat=unix
-"tabstop
+set fileformats=unix,dos,mac
+"indents and tabs
 set expandtab
-set tabstop=4
-set shiftwidth=4
 set softtabstop=4
-"fold
-set foldmethod=indent
-set foldlevel=99
+set shiftwidth=4
+"text width
+set textwidth=79
+"long lines
+set nowrap
+set sidescroll=20
 "search setting
 set ignorecase
-"text width
-set textwidth=80
+set nowrapscan
+"fold
+set foldmethod=syntax
+set foldlevel=99
 
 "Appearance
 "color
 set termguicolors
-syntax enable
 set background=light
 colorscheme solarized
-"layout
+"view
 set number
 set cursorline
 set cursorcolumn
-set nowrap
 set signcolumn=yes
+"tab visible
+set list
+set listchars=tab:\\u21E4-\\u21E5
 "multiple windows
 set splitright
 set splitbelow
 
-"Hotkey
+"Key mapping
 "jump between buffers and tabs
 nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
@@ -60,8 +62,8 @@ nnoremap <silent> ]t :tabnext<CR>
 "rerender screen and erase search highlight
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 "easy motion
-nmap <leader>s <Plug>(easymotion-overwin-f2)
-"coc
+nnoremap <leader>s <Plug>(easymotion-overwin-f2)
+"completion
 "use <tab> for trigger completion and navigate to the next item
 function! CheckBackSpace() abort
     let col = col('.') - 1
@@ -72,8 +74,7 @@ inoremap <silent><expr> <Tab>
     \ CheckBackSpace() ? "\<Tab>" :
     \ coc#refresh()
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#comfirm()
-    \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <expr> <cr> coc#pum#visible() ? coc#pum#confirm() : "\<CR>"
 "snippet expand
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 "navigate diagnostics
