@@ -8,22 +8,14 @@ Download the Arch Linux installation [image](https://archlinux.org/download/).
 Use [Rufus](https://rufus.ie) to write it to a USB stick.
 Boot the live environment.
 
-### 1.2 Connect to the internet
+### 1.2 Connect to the Internet
 
 Ethernet is preferred.
 Plug in the cable, and DHCD will work out of the box.
 For WiFi refer to [here](https://wiki.archlinux.org/index.php/iwd#iwctl).
 
-```bash
-ping wiki.archlinux.org
-```
-
 In the living environment, systemd-timesyncd is enabled by default.
-Just ensure the system clock is accurate.
-
-```bash
-timedatectl
-```
+Just ensure the system clock is accurate via `timedatectl`.
 
 ### 1.3 Partition the disks
 
@@ -31,28 +23,27 @@ Show all disks and partitions.
 
 ```bash
 fdisk -l
-fdisk /dev/the_disk_to_be_partitioned
+fdisk /dev/{disk}
 ```
 
-Create a partition for `/`, a partition for `/boot` and
-another partition for swap.
-
-Format the partitions.
+Create a partition as root partition,
+a partition as boot partition,
+and another partition for swap.
+Format these partitions.
 
 ```bash
-mkfs.fat -F 32 /dev/boot_partition
-mkfs.ext4 /dev/root_partition
-mkswap /dev/swap_partition
+mkfs.fat -F 32 /dev/{boot_partition}
+mkfs.ext4 /dev/{root_partition}
+mkswap /dev/{swap_partition}
 ```
 
 Mount the file systems.
 
 ```bash
-mount /dev/root_partition /mnt
+mount /dev/{root_partition} /mnt
 mkdir /mnt/boot
-mount /dev/boot_partition /mnt/boot
-
-swapon /dev/swap_partition
+mount /dev/{boot_partition} /mnt/boot
+swapon /dev/{swap_partition}
 ```
 
 ## 2. Install basic Linux and configure the system
@@ -64,13 +55,9 @@ Install Linux, CPU microcode, boot loader, network manager and a text editor.
 
 ```bash
 pacstrap -K /mnt base base-devel
-pacstrap -K /mnt linux-lts linux-firmware
-# select according to your CPU
-pacstrap -K /mnt intel-ucode
-pacstrap -K /mnt amd-ucode
+pacstrap -K /mnt linux-lts linux-firmware intel-ucode # or amd-ucode
 pacstrap -K /mnt grub efibootmgr
-pacstrap -K /mnt networkmanager neovim
-pacstrap -K /mnt man-db man-pages
+pacstrap -K /mnt networkmanager neovim man-db man-pages
 ```
 
 Generate a fstab file.
@@ -79,11 +66,7 @@ Generate a fstab file.
 genfstab -U /mnt >> /mnt/etc/fstab
 ```
 
-Then change root into the system.
-
-```bash
-arch-chroot /mnt
-```
+Then change root into the system via `arch-chroot /mnt`.
 
 ### 2.2 Configure the time and region
 
@@ -100,12 +83,7 @@ hwclock --systohc --localtime
 ```
 
 Edit `/etc/locale.gen` and uncomment `en_US.UTF-8`.
-Generate the locales.
-
-```bash
-locale-gen
-```
-
+Generate the locales via `locale-gen`.
 Create `/etc/locale.conf`.
 
 ```plain
@@ -155,13 +133,12 @@ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB \
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-Exit the chroot environment. Unmount all the partitions.
+Exit the chroot environment. Unmount all the partitions and reboot.
 
 ```bash
 umount -R /mnt
+reboot
 ```
-
-Reboot.
 
 ## 3. Post-installation
 
@@ -237,7 +214,7 @@ yay -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
 ### 3.3 Install utilities and softwares
 
 ```bash
-yay -S p7zip openssh wget
+yay -S p7zip openssh
 yay -S rsync rclone
 yay -S fcitx5-im fcitx5-chinese-addons
 yay -S keepassxc goldendict vlc chromium
@@ -256,68 +233,58 @@ Host *
     ServerAliveInterval 60
 ```
 
-## 3.4 Download the dotfiles
+### 3.4 Download the dotfiles
 
 ```bash
 git clone git@github.com:binzhang-u5f6c/dotfiles.git .dotfiles
 cd .dotfiles
-chmod 755 install.sh
-./install.sh
-cd
+./install.sh # chmod if not executable: chmod 755 install.sh
 ```
 
 ## 4. Configure development environment
 
-Install development utilities.
+Open neovim to install neovim plugins.
+Install other utilities for development.
 
 ```bash
 yay -S ripgrep fzf tmux
 ```
 
-Install some programming languages which may be needed.
+### 4.1 Install Python development environment
+
+Install Python and pipx.
 
 ```bash
-pacman -S python python-pip
-pacman -S nodejs npm yarn
+yay -S pyenv
+pyenv install {version}
+pyenv global {version}
+pip install pipx
+pipx ensurepath
 ```
 
-Change npm's default directory.
+Install Python development tools.
 
 ```bash
-npm config set prefix '~/.local'
+pipx install python-lsp-server[flake8,yapf,python-pydocstyle]
+pipx install poetry
+pipx install pytest-cov
 ```
 
-### 4.1 Configure neovim
+### 4.2 Install c/c++ development environment
 
-Install neovim plugins.
-
-```bash
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-mkdir ~/.config/nvim/plugins
-nvim .config/nvim/init.vim
-```
-
-Use `:PlugInstall` in neovim to install vim plugins.
-
-### 4.2 Install LSP
-
-Install clang.
+Install clang compiler.
 
 ```bash
 yay -S llvm clang
 ```
 
-Install python language server.
-
-```bash
-yay -S python-lsp-server
-yay -S python-pycodestyle python-pydocstyle flake8 yapf
-```
+### 4.3 Install bash scripting development environment
 
 Install bash language server.
 
 ```bash
+yay -S npm
+npm config set prefix '~/.local'
 npm install -g bash-language-server
 ```
 
