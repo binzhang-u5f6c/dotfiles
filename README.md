@@ -252,22 +252,30 @@ yay -S ripgrep fzf tmux
 
 ### 4.1 Install Python development environment
 
-Install Python and pipx.
+Install Python via uv.
 
 ```bash
-yay -S pyenv
-pyenv install {version}
-pyenv global {version}
-pip install pipx
-pipx ensurepath
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv python install {python_version}
 ```
 
 Install Python development tools.
 
 ```bash
-pipx install python-lsp-server[flake8,yapf,python-pydocstyle]
-pipx install poetry
-pipx install pytest-cov
+uv tool install python-lsp-server[flake8,yapf,pydocstyle]
+uv tool install jupyterlab
+```
+
+Here is an example of create a machine learning project.
+
+```bash
+uv init MachineLearning
+cd MachineLearning
+uv add numpy scipy scikit-learn pandas matplotlib
+uv add torch --index pytorch=https://download.pytorch.org/whl/cpu
+uv add tensorflow jax
+uv add ipykernel
+uv run python -m ipykernel install --user --name "{name}" --display-name "{display_name}"
 ```
 
 ### 4.2 Install c/c++ development environment
